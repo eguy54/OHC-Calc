@@ -29,6 +29,16 @@ Runtime helpers:
 - `format_conductor_name(row)` for UI labels like `795 26/7 Drake`
 - `load_family_materials()` from `conductor_library/data/conductor_family_materials.csv`
 
+## IEEE 738 engine
+
+The thermal engine now includes a fast steady-state IEEE 738 implementation in
+`thermal_engine/ieee738.py`:
+- `IEEE738Inputs`
+- `calculate_ieee738_steady_state(...)`
+
+The Streamlit UI `DLR Inputs` section uses this engine directly and reports
+ampacity plus heat-balance terms.
+
 ## Local run
 
 ```powershell

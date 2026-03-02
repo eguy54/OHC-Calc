@@ -12,6 +12,7 @@ from conductor_library import (
     load_conductor_family,
     load_family_materials,
 )
+from thermal_engine import IEEE738Inputs, calculate_ieee738_steady_state
 
 
 def _to_int(value: str) -> int:
@@ -273,7 +274,7 @@ with st.container(border=True):
             key="ghi_wm2",
         )
     with dlr_col3:
-        perp_wind_factor = st.slider(
+        wind_incidence_angle_deg = st.slider(
             "Windspeed Incidence Angle (deg)",
             min_value=0,
             max_value=90,
@@ -290,5 +291,42 @@ with st.container(border=True):
             help="0 = open terrain, 100 = fully sheltered",
         )
     st.caption(
-        f"MOT `{mot_c:.1f} C` | Wind `{windspeed_mps:.1f} m/s` | Ambient `{ambient_c:.1f} C` | GHI `{ghi_wm2} W/m2` | Angle `{perp_wind_factor} deg` | Shelter `{wind_shelter_pct}%`"
+        f"MOT `{mot_c:.1f} C` | Wind `{windspeed_mps:.1f} m/s` | Ambient `{ambient_c:.1f} C` | GHI `{ghi_wm2} W/m2` | Angle `{wind_incidence_angle_deg} deg` | Shelter `{wind_shelter_pct}%`"
+    )
+
+    diameter_m = _to_float(selected_row.get("metal_od", "0")) * 0.0254
+    r_low_ohm_per_m = _to_float(selected_row.get("low_resistance_ohm_per_mile", "0")) / 1609.344
+    r_high_ohm_per_m = _to_float(selected_row.get("hi_resistance_ohm_per_mile", "0")) / 1609.344
+    t_low_c = _to_float(selected_row.get("low_temp_degc", "25"))
+    t_high_c = _to_float(selected_row.get("hi_temp_degc", "75"))
+    if r_high_ohm_per_m <= 0:
+        r_high_ohm_per_m = r_low_ohm_per_m
+    if t_high_c <= t_low_c:
+        t_high_c = t_low_c + 1.0
+
+    dlr = calculate_ieee738_steady_state(
+        IEEE738Inputs(
+            conductor_temp_c=mot_c,
+            ambient_temp_c=ambient_c,
+            diameter_m=max(diameter_m, 1e-6),
+            resistance_low_ohm_per_m=max(r_low_ohm_per_m, 1e-9),
+            resistance_high_ohm_per_m=max(r_high_ohm_per_m, 1e-9),
+            resistance_low_temp_c=t_low_c,
+            resistance_high_temp_c=t_high_c,
+            emissivity=emissivity,
+            absorptivity=absorptivity,
+            wind_speed_mps=windspeed_mps,
+            wind_angle_deg=wind_incidence_angle_deg,
+            elevation_m=0.0,
+            solar_radiation_w_per_m2=float(ghi_wm2),
+            wind_sheltering_factor_pct=float(wind_shelter_pct),
+        )
+    )
+
+    out_col1, out_col2, out_col3 = st.columns(3, gap="small")
+    out_col1.metric("IEEE 738 DLR (A)", f"{dlr.ampacity_a:,.1f}")
+    out_col2.metric("Effective Wind (m/s)", f"{dlr.wind_effective_mps:.2f}")
+    out_col3.metric("Resistance @ MOT (ohm/km)", f"{dlr.resistance_ohm_per_m * 1000:.4f}")
+    st.caption(
+        f"Heat terms (W/m): convection `{dlr.q_conv_w_per_m:.1f}` | radiation `{dlr.q_rad_w_per_m:.1f}` | solar `{dlr.q_solar_w_per_m:.1f}`"
     )
