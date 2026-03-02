@@ -1,0 +1,13 @@
+family,outer_material,core_material,construction_notes,source_url
+HD Copper,Hard-drawn copper,None,Concentric-lay stranded hard-drawn copper for overhead use,https://store.astm.org/Standards/B1.htm
+AAAC,Aluminum alloy 6201-T81,None,Concentric-lay stranded aluminum-alloy conductor,https://store.astm.org/Standards/B399.htm
+AAC,Aluminum 1350 (hard-drawn),None,Concentric-lay stranded all-aluminum conductor,https://store.astm.org/b0231_b0231m-23.html
+ACAR,Aluminum 1350-H19,Aluminum-alloy 6201-T81,Aluminum conductor reinforced with aluminum-alloy core wires,https://store.astm.org/Standards/B524.htm
+ACCC,Fully annealed aluminum (often trapezoidal),Carbon and glass fiber composite core (epoxy matrix),Composite-core HTLS conductor,https://www.powerlinesystems.com/cables-ctc-global
+ACCR,Aluminum-zirconium alloy,Aluminum-matrix composite reinforced with alumina fibers,High-capacity conductor with lightweight composite-reinforced core,https://www.3m.com/3M/en_US/p/c/electrical/wire-cable/aluminum-composite/
+ACSSTW,Trapezoidal aluminum 1350-O,Coated steel,ACSS variant using trapezoidal wires,https://store.astm.org/b0857-11e01.html
+ACSR,Aluminum 1350-H19,Coated steel,Concentric-lay stranded aluminum conductor steel reinforced,https://store.astm.org/b0232_b0232m-01e01.html
+AACSR,Aluminum-alloy 6201,Coated steel,Concentric-lay stranded aluminum-alloy conductor steel reinforced,https://webstore.ansi.org/standards/astm/astmb71118
+AACTW,Trapezoidal aluminum 1350-H19,None,Shaped-wire compact all-aluminum conductor (AAC/TW),https://store.astm.org/b0778-19.html
+ACSS,Aluminum 1350-O (annealed),Coated steel,Steel-supported conductor for high-temperature operation,https://store.astm.org/b0856-18.html
+ACSRTW,Trapezoidal aluminum 1350-H19,Coated steel,ACSR variant using trapezoidal-shaped aluminum wires,https://store.astm.org/b0779-12.html

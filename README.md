@@ -8,6 +8,27 @@ OHC Calculator is intentionally split into three layers:
 
 The current app is an end-to-end "hello world" that proves those layers talk to each other.
 
+## Conductor datasets from spreadsheet
+
+The legacy workbook can be converted into app-ready CSV tables under
+`conductor_library/data/conductors/`.
+
+Run:
+
+```powershell
+.\.venv\Scripts\python scripts\extract_conductor_sheets.py --input "C:\Users\The Twos\Downloads\314877432-Oht-Cond-Rating-Spreadsheet.xls"
+```
+
+This exports:
+- `aaac.csv`, `aac.csv`, `acar.csv`, etc.
+- `manifest.csv` with family/file/record counts
+
+Runtime helpers:
+- `list_conductor_families()`
+- `load_conductor_family("AAAC")`
+- `format_conductor_name(row)` for UI labels like `795 26/7 Drake`
+- `load_family_materials()` from `conductor_library/data/conductor_family_materials.csv`
+
 ## Local run
 
 ```powershell

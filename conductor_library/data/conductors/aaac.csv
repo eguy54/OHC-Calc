@@ -1,0 +1,16 @@
+family,code_word,size,cond_strand,cond_wire_dia,metal_od,low_temp_degc,low_resistance_ohm_per_mile,hi_temp_degc,hi_resistance_ohm_per_mile,al_weight,spec,values_from
+AAAC,Akron,30.58,7,0.0661,0.198,25,3.5394,75,4.1430,28.5,AAAC,Southwire
+AAAC,Alton,48.69,7,0.0834,0.250,25,2.2235,75,2.6026,45.4,AAAC,Southwire
+AAAC,Ames,77.47,7,0.1052,0.316,25,1.3973,75,1.6355,72.2,AAAC,Southwire
+AAAC,Azusa,123.3,7,0.1327,0.398,25,0.8782,75,1.0278,114.9,AAAC,Southwire
+AAAC,Anaheim,155.4,7,0.1490,0.447,25,0.6969,75,0.8156,144.9,AAAC,Southwire
+AAAC,Amherst,195.7,7,0.1672,0.502,25,0.5536,75,0.6478,182.5,AAAC,Southwire
+AAAC,Alliance,246.9,7,0.1878,0.563,25,0.4391,75,0.5137,230.2,AAAC,Southwire
+AAAC,Amarillo,246.9,19,0.1140,0.570,25,0.4391,75,0.5137,230.3,AAAC,Southwire
+AAAC,Butte,312.8,19,0.1283,0.642,25,0.3469,75,0.4058,291.6,AAAC,Southwire
+AAAC,Canton,394.5,19,0.1441,0.721,25,0.2755,75,0.3221,367.9,AAAC,Southwire
+AAAC,Cairo,465.4,19,0.1565,0.783,25,0.2339,75,0.2733,433.9,AAAC,Southwire
+AAAC,Darien,559.5,19,0.1716,0.858,25,0.1950,75,0.2278,521.7,AAAC,Southwire
+AAAC,Elgin,652.4,19,0.1853,0.927,25,0.1677,75,0.1958,608.3,AAAC,Southwire
+AAAC,Flint,740.8,37,0.1415,0.991,25,0.1482,75,0.1728,690.8,AAAC,Southwire
+AAAC,Greeley,927.2,37,0.1583,1.108,25,0.1193,75,0.1389,864.6,AAAC,Southwire

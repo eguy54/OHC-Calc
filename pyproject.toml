@@ -14,3 +14,6 @@ dependencies = [
 
 [tool.setuptools]
 packages = ["thermal_engine", "conductor_library"]
+
+[tool.setuptools.package-data]
+conductor_library = ["data/*.csv", "data/conductors/*.csv"]

@@ -1,0 +1,7 @@
+family,code_word,size,cond_strand,cond_wire_dia,metal_od,low_temp_degc,low_resistance_ohm_per_mile,hi_temp_degc,hi_resistance_ohm_per_mile,cu_weight,spec,values_from
+HD Copper,2 - 7,2,7,0.0974,0.2922,25,0.8921,75,1.0579,204.9,ASTM B 8,Southwire
+HD Copper,1/0 - 7,1/0,7,0.1228,0.3684,25,0.5615,75,0.6658,325.9,ASTM B 8,Southwire
+HD Copper,4/0 - 7,4/0,7,0.1739,0.522,20,0.27561,100,0.34851,653.3,ASTM B 8,Old Pjm
+HD Copper,250 - 19,250,19,0.1147,0.5735,25,0.2380,75,0.2819,772,ASTM B 8,Southwire
+HD Copper,500 - 19,500,19,0.1622,0.811,20,0.11825,100,0.14953,1544,ASTM B 8,Old Pjm
+HD Copper,1000 - 37,1000,37,0.1644,1.1508,25,0.0640,75,0.0744,3088,ASTM B 8,Southwire
