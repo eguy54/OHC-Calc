@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ohc-calculator"
+version = "0.1.0"
+description = "OHC Calculator scaffold"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "streamlit>=1.40",
+]
+
+[tool.setuptools]
+packages = ["thermal_engine", "conductor_library"]
