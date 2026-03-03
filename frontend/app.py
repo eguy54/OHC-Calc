@@ -195,7 +195,15 @@ st.title("OHC Calculator")
 st.markdown(
     """
 <style>
-div.block-container {padding-top: 1.2rem; padding-bottom: 1.2rem; max-width: 1220px; margin-left: auto; margin-right: auto;}
+div.block-container {
+  padding-top: 2.4rem;
+  padding-bottom: 1.2rem;
+  padding-left: 0;
+  padding-right: 0;
+  width: min(1220px, calc(100% - 2.4rem));
+  margin-left: auto;
+  margin-right: auto;
+}
 div[data-testid="stVerticalBlock"] > div:has(> div[data-testid="stHorizontalBlock"]) {gap: 0.6rem;}
 div[data-testid="stMarkdownContainer"] p {margin-bottom: 0.35rem;}
 div[data-testid="stTextInput"] {margin-bottom: 0.35rem;}
