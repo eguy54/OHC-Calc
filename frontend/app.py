@@ -386,7 +386,7 @@ with st.container(border=True):
     with amb_col2:
         windspeed_text = st.text_input(
             "Windspeed (m/s)",
-            value="1",
+            value="0.5",
             key="windspeed_text",
             help="Wind speed magnitude. Valid range: 0 to 10 m/s.",
         )
@@ -413,26 +413,143 @@ with st.container(border=True):
     if not ghi_ok:
         st.warning("GHI must be a number between 0 and 1000 W/m2.")
 
+    base_ieee738_inputs = {
+        "conductor_temp_c": mot_c,
+        "ambient_temp_c": ambient_c,
+        "diameter_m": max(diameter_m, 1e-6),
+        "resistance_low_ohm_per_m": max(r_low_ohm_per_m, 1e-9),
+        "resistance_high_ohm_per_m": max(r_high_ohm_per_m, 1e-9),
+        "resistance_low_temp_c": t_low_c,
+        "resistance_high_temp_c": t_high_c,
+        "wind_speed_mps": windspeed_mps,
+        "wind_angle_deg": line_angle_deg,
+        "elevation_m": 0.0,
+        "solar_radiation_w_per_m2": float(ghi_wm2),
+        "wind_sheltering_factor_pct": float(wind_shelter_pct),
+    }
     dlr = calculate_ieee738_steady_state(
         IEEE738Inputs(
-            conductor_temp_c=mot_c,
-            ambient_temp_c=ambient_c,
-            diameter_m=max(diameter_m, 1e-6),
-            resistance_low_ohm_per_m=max(r_low_ohm_per_m, 1e-9),
-            resistance_high_ohm_per_m=max(r_high_ohm_per_m, 1e-9),
-            resistance_low_temp_c=t_low_c,
-            resistance_high_temp_c=t_high_c,
             emissivity=emissivity,
             absorptivity=absorptivity,
-            wind_speed_mps=windspeed_mps,
-            wind_angle_deg=line_angle_deg,
-            elevation_m=0.0,
-            solar_radiation_w_per_m2=float(ghi_wm2),
-            wind_sheltering_factor_pct=float(wind_shelter_pct),
+            **base_ieee738_inputs,
         )
     )
     with amb_col4:
         st.metric("DLR (A)", f"{dlr.ampacity_a:,.0f}")
+
+with st.container(border=True):
+    st.subheader("Conductor Coating Analysis")
+    coating_col1, coating_col2, coating_col3 = st.columns([1.0, 1.0, 1.2], gap="small")
+    with coating_col1:
+        coating_emissivity_text = st.text_input(
+            "Emissivity",
+            value="0.9",
+            key="coating_emissivity_text",
+            help="Coated conductor emissivity. Valid range: 0 to 1.",
+        )
+    with coating_col2:
+        coating_absorptivity_text = st.text_input(
+            "Absorptivity",
+            value="0.5",
+            key="coating_absorptivity_text",
+            help="Coated conductor absorptivity. Valid range: 0 to 1.",
+        )
+    coating_emissivity, coating_emissivity_ok = _parse_unit_interval(coating_emissivity_text, 0.9)
+    coating_absorptivity, coating_absorptivity_ok = _parse_unit_interval(coating_absorptivity_text, 0.5)
+    if not coating_emissivity_ok:
+        st.warning("Coating emissivity must be a number between 0 and 1.")
+    if not coating_absorptivity_ok:
+        st.warning("Coating absorptivity must be a number between 0 and 1.")
+
+    coated_dlr = calculate_ieee738_steady_state(
+        IEEE738Inputs(
+            emissivity=coating_emissivity,
+            absorptivity=coating_absorptivity,
+            **base_ieee738_inputs,
+        )
+    )
+    coating_delta_pct = ((coated_dlr.ampacity_a / dlr.ampacity_a) - 1.0) * 100.0 if dlr.ampacity_a > 0 else 0.0
+    coating_delta_prefix = "+" if coating_delta_pct >= 0 else ""
+    with coating_col3:
+        st.metric(
+            "DLR (A)",
+            f"{coated_dlr.ampacity_a:,.0f} ({coating_delta_prefix}{coating_delta_pct:.0f}%)",
+        )
+
+    mot_steps = np.arange(50.0, 251.0, 10.0, dtype=np.float64)
+    baseline_mot_curve = calculate_ieee738_ampacity_batch(
+        conductor_temp_c=mot_steps,
+        ambient_temp_c=np.full_like(mot_steps, ambient_c),
+        wind_speed_mps=np.full_like(mot_steps, windspeed_mps),
+        wind_angle_deg=np.full_like(mot_steps, line_angle_deg),
+        solar_radiation_w_per_m2=np.full_like(mot_steps, ghi_wm2),
+        wind_sheltering_factor_pct=np.full_like(mot_steps, wind_shelter_pct),
+        diameter_m=base_ieee738_inputs["diameter_m"],
+        resistance_low_ohm_per_m=base_ieee738_inputs["resistance_low_ohm_per_m"],
+        resistance_high_ohm_per_m=base_ieee738_inputs["resistance_high_ohm_per_m"],
+        resistance_low_temp_c=t_low_c,
+        resistance_high_temp_c=t_high_c,
+        emissivity=emissivity,
+        absorptivity=absorptivity,
+        elevation_m=0.0,
+    )
+    coated_mot_curve = calculate_ieee738_ampacity_batch(
+        conductor_temp_c=mot_steps,
+        ambient_temp_c=np.full_like(mot_steps, ambient_c),
+        wind_speed_mps=np.full_like(mot_steps, windspeed_mps),
+        wind_angle_deg=np.full_like(mot_steps, line_angle_deg),
+        solar_radiation_w_per_m2=np.full_like(mot_steps, ghi_wm2),
+        wind_sheltering_factor_pct=np.full_like(mot_steps, wind_shelter_pct),
+        diameter_m=base_ieee738_inputs["diameter_m"],
+        resistance_low_ohm_per_m=base_ieee738_inputs["resistance_low_ohm_per_m"],
+        resistance_high_ohm_per_m=base_ieee738_inputs["resistance_high_ohm_per_m"],
+        resistance_low_temp_c=t_low_c,
+        resistance_high_temp_c=t_high_c,
+        emissivity=coating_emissivity,
+        absorptivity=coating_absorptivity,
+        elevation_m=0.0,
+    )
+    coating_curve_df = pd.DataFrame(
+        {
+            "mot_c": np.tile(mot_steps, 2),
+            "rating_amps": np.concatenate([baseline_mot_curve, coated_mot_curve]),
+            "Series": (
+                ["DLR withouth Coating"] * len(mot_steps)
+                + ["DLR with Coating"] * len(mot_steps)
+            ),
+        }
+    )
+    coating_chart = (
+        alt.Chart(coating_curve_df)
+        .mark_line(strokeWidth=2.5)
+        .encode(
+            x=alt.X("mot_c:Q", title="MOT (C)", axis=alt.Axis(values=list(range(50, 251, 20)))),
+            y=alt.Y("rating_amps:Q", title="Rating (Amps)"),
+            color=alt.Color(
+                "Series:N",
+                scale=alt.Scale(
+                    domain=["DLR withouth Coating", "DLR with Coating"],
+                    range=["#94a3b8", "#163a76"],
+                ),
+                legend=alt.Legend(
+                    orient="top-left",
+                    title=None,
+                    fillColor="rgba(255,255,255,0.72)",
+                    strokeColor="#d1d5db",
+                    cornerRadius=6,
+                    padding=8,
+                    symbolStrokeWidth=3,
+                ),
+            ),
+            tooltip=[
+                alt.Tooltip("Series:N", title="Series"),
+                alt.Tooltip("mot_c:Q", title="MOT (C)", format=".0f"),
+                alt.Tooltip("rating_amps:Q", title="Rating (A)", format=".0f"),
+            ],
+        )
+        .properties(height=325)
+    )
+    st.altair_chart(coating_chart, use_container_width=True)
 
 with st.container(border=True):
     st.subheader("Sensitivity Analysis")
